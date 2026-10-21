@@ -3,6 +3,16 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [unreleased]
+
+### Added
+
+- Added a purely additive Chinese (ZH) fusion report via the `--report_zh` flag. After the main pipeline, a local `REPORT_ZH` process renders an additional HTML (and best-effort PDF, when `wkhtmltopdf` is available) report from the raw tool outputs. The original English MultiQC report is completely untouched. Methylation-side contract files can be fused in (`--meth-result-dir`), with the reference-style split-table layout for read filtering, and an external DEG table can be injected into §7.2 (`--deg-table`).
+
+### Credits
+
+- Turing Biotech — Chinese fusion report module (`modules/local/report_zh`).
+
 ## [[3.27.0](https://github.com/nf-core/rnaseq/releases/tag/3.27.0)] - 2026-09-23
 
 ### Credits

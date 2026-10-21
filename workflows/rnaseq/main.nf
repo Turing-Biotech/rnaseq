@@ -18,6 +18,7 @@ include { RUSTQC                              } from '../../modules/nf-core/rust
 include { ALIGN_STAR                            } from '../../subworkflows/local/align_star'
 include { ALIGN_BOWTIE2                         } from '../../subworkflows/local/align_bowtie2'
 include { MULTIQC_RNASEQ                        } from '../../subworkflows/local/multiqc_rnaseq'
+include { REPORT_ZH                             } from '../../modules/local/report_zh'
 include { BAM_QC_RNASEQ                         } from '../../subworkflows/nf-core/bam_qc_rnaseq'
 include { QUANTIFY_RSEM                         } from '../../subworkflows/nf-core/quantify_rsem'
 include { BAM_DEDUP_UMI                         } from '../../subworkflows/nf-core/bam_dedup_umi'
@@ -805,6 +806,19 @@ workflow RNASEQ {
     }
 
     //
+    // Collect DeSeq2 QC tables (PCA / distances) for the optional Chinese report
+    //
+    ch_deseq2_qc_files = channel.empty()
+    if (!params.skip_qc && !params.skip_deseq2_qc && !params.skip_quantification_merge) {
+        ch_deseq2_qc_files = ch_deseq2_qc_files.mix(DESEQ2_QC_BAM_SALMON.out.pca_multiqc)
+        ch_deseq2_qc_files = ch_deseq2_qc_files.mix(DESEQ2_QC_BAM_SALMON.out.dists_multiqc)
+        ch_deseq2_qc_files = ch_deseq2_qc_files.mix(DESEQ2_QC_RSEM.out.pca_multiqc)
+        ch_deseq2_qc_files = ch_deseq2_qc_files.mix(DESEQ2_QC_RSEM.out.dists_multiqc)
+        ch_deseq2_qc_files = ch_deseq2_qc_files.mix(DESEQ2_QC_PSEUDO.out.pca_multiqc)
+        ch_deseq2_qc_files = ch_deseq2_qc_files.mix(DESEQ2_QC_PSEUDO.out.dists_multiqc)
+    }
+
+    //
     // Collate and save software versions from the `versions` topic
     //
     ch_collated_versions = softwareVersionsToYAML(topic_versions.versions_file)
@@ -841,6 +855,48 @@ workflow RNASEQ {
             params.skip_quantification_merge
         )
         ch_multiqc_report = MULTIQC_RNASEQ.out.report
+    }
+
+    //
+    // LOCAL PROCESS: Chinese fusion report (optional, --report_zh)
+    //
+    ch_report_zh_html = channel.empty()
+    if (params.report_zh) {
+        // Stage the small vendor contract files from the optional methylation side
+        def meth_files = []
+        if (params.meth_result_dir) {
+            def meth_root = file(params.meth_result_dir)
+            if (meth_root.exists()) {
+                meth_root.eachFileRecurse { f ->
+                    def n = f.name.toUpperCase()
+                    if (n.contains('GROUPPLAN') || n.contains('DMRPLAN') || n.contains('FILTERSUMMARY') ||
+                        n.contains('GENOMEMAPPING') || n.contains('NUMBERSTAT') || n.contains('METHYSTAT') ||
+                        (f.parent != null && f.parent.name.toUpperCase().contains('CSITES'))) {
+                        meth_files << f
+                    }
+                }
+            }
+        }
+        def rz_meta = [
+            project_id   : params.report_project_id ?: '',
+            title        : params.report_title ?: 'RNA-seq 实验报告',
+            company      : params.report_company ?: '图凌生物技术公司',
+            date         : new java.util.Date().format('yyyy-MM-dd HH:mm'),
+            command_line : workflow.commandLine ?: '',
+            genome       : params.genome ?: (params.reference_genome ? "custom (${params.reference_genome})" : ''),
+            gtf          : params.gtf ? "custom GTF (${params.gtf})" : 'igenomes default GTF',
+        ]
+        REPORT_ZH(
+            file(params.input),
+            ch_collated_versions,
+            ch_deseq2_qc_files.collect(),
+            meth_files,
+            params.deg_table ? file(params.deg_table, checkIfExists: true) : null,
+            params.report_logo ? file(params.report_logo, checkIfExists: true) : null,
+            file(params.outdir),
+            rz_meta
+        )
+        ch_report_zh_html = REPORT_ZH.out.html
     }
 
     //
@@ -886,6 +942,7 @@ workflow RNASEQ {
     map_status     = ch_map_status     // channel: [id, boolean]
     strand_status  = ch_strand_status  // channel: [id, boolean]
     multiqc_report = ch_multiqc_report // channel: /path/to/multiqc_report.html
+    report_zh_html = ch_report_zh_html // channel: /path/to/rnaseq_report_zh.html (only when --report_zh)
 }
 
 /*

@@ -657,6 +657,54 @@
                     "fa_icon": "fas fa-save",
                     "description": "Save reads that were not given assignment from Kraken2.",
                     "help_text": "The `--kraken_db` parameter must be provided to use this option."
+                },
+                "report_zh": {
+                    "type": "boolean",
+                    "fa_icon": "fas fa-language",
+                    "description": "After the main pipeline, render an additional Chinese (ZH) fusion report (HTML and best-effort PDF) from the raw tool outputs. The original English MultiQC report is untouched.",
+                    "default": false
+                },
+                "meth_result_dir": {
+                    "type": "string",
+                    "fa_icon": "fas fa-dna",
+                    "description": "Base directory of a companion methylation analysis result set (vendor contract files such as FilterSummary.xls / GenomeMappingSummary.xls / Csites_coverage / Methylation/*number_stat.xls, TSV format). When provided, sections 3.1 (separate table), 4.2, 5.x and 1.2.1/1.2.2 are filled with methylation-side data.",
+                    "default": null
+                },
+                "deg_comparison": {
+                    "type": "string",
+                    "fa_icon": "fas fa-exchange-alt",
+                    "description": "Optional DEG contrast label for section 1.2.2, e.g. 'Control vs FD'.",
+                    "default": null
+                },
+                "deg_table": {
+                    "type": "string",
+                    "fa_icon": "fas fa-table",
+                    "description": "Optional external DEG table (TSV/CSV with log2FC and adjusted-p columns) injected into section 7.2. Section 7.2 is skipped when omitted.",
+                    "default": null
+                },
+                "report_logo": {
+                    "type": "string",
+                    "fa_icon": "fas fa-image",
+                    "description": "Optional logo (PNG) shown on the report cover.",
+                    "default": null
+                },
+                "report_project_id": {
+                    "type": "string",
+                    "fa_icon": "fas fa-hashtag",
+                    "description": "Project identifier shown in sections 1 and 2.",
+                    "default": ""
+                },
+                "report_title": {
+                    "type": "string",
+                    "fa_icon": "fas fa-heading",
+                    "description": "Title shown on the report cover.",
+                    "default": ""
+                },
+                "report_company": {
+                    "type": "string",
+                    "fa_icon": "fas fa-building",
+                    "description": "Company name shown on the report cover and in the methods section.",
+                    "default": "图凌生物技术公司"
                 }
             }
         },

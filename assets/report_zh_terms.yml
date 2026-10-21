@@ -1,0 +1,26 @@
+# Report structure (levels 1/2/3). Keys are the section anchors.
+# Edit titles here without touching code.
+sections:
+  s1:     { level: 1, title: "项目概述" }
+  s1_1:   { level: 2, title: "摘要" }
+  s1_2:   { level: 2, title: "实验设计" }
+  s1_2_1: { level: 3, title: "实验分组" }
+  s1_2_2: { level: 3, title: "差异分析对比" }
+  s2:     { level: 1, title: "参考信息" }
+  s3:     { level: 1, title: "Read 过滤" }
+  s3_1:   { level: 2, title: "过滤前后对比" }
+  s3_2:   { level: 2, title: "FastQC 质量" }
+  s4:     { level: 1, title: "Read 比对" }
+  s4_1:   { level: 2, title: "比对统计" }
+  s4_2:   { level: 2, title: "mC 覆盖" }
+  s5:     { level: 1, title: "甲基化水平统计" }
+  s5_1:   { level: 2, title: "染色体水平分布" }
+  s5_2:   { level: 2, title: "元件水平分布" }
+  s5_3:   { level: 2, title: "不同甲基化水平分类统计" }
+  s6:     { level: 1, title: "转录组定量" }
+  s7:     { level: 1, title: "表达量 QC" }
+  s7_1:   { level: 2, title: "PCA 与样本间距离" }
+  s7_2:   { level: 2, title: "差异表达概况" }
+  s8:     { level: 1, title: "软件版本与方法" }
+  s8_1:   { level: 2, title: "软件版本" }
+  s8_2:   { level: 2, title: "分析方法" }

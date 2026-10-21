@@ -1,0 +1,34 @@
+name: "LOCAL_REPORT_ZH"
+description: "Render a Chinese (ZH) fusion QC report: RNA-seq pipeline outputs plus optional methylation results, as HTML and best-effort PDF"
+keywords:
+  - report
+  - multiqc
+  - qc
+  - reporting
+  - zh
+  - chinese
+  - html
+  - pdf
+  - fusion
+  - custom
+report:
+  - "https://github.com/Turing-Biotech/rnaseq/tree/master/modules/local/report_zh"
+publication: ""
+license: "MIT"
+author: Turing Biotech
+maintainer: Turing Biotech
+
+input:
+  - samplesheet: Pipeline sample sheet (CSV)
+  - versions_yml: Collect software versions YAML
+  - deseq2_files: DeSeq2 QC tables (PCA / sample distances, TSV; may be empty)
+  - meth_files: Optional methylation contract files (TSV, may be empty)
+  - deg_table: Optional DEG table CSV for section 7.2 (may be omitted)
+  - logo: Optional logo PNG for the cover page (may be omitted)
+  - outdir: Absolute path of the pipeline output directory
+  - meta: Map of report metadata (title/company/date/command_line/genome/gtf/project_id)
+
+output:
+  - html: "Report HTML (results/report_zh/rnaseq_report_zh.html)"
+  - pdf: "Report PDF, best effort (only when wkhtmltopdf is available)"
+  - versions: "Software versions YAML"

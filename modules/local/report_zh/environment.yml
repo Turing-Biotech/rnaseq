@@ -1,0 +1,10 @@
+---
+# NOTE: keep in sync with the containers used by the process
+# (this environment is only consumed by `-profile conda`; the docker profile
+# installs the same pure-python dependencies at process start)
+channels:
+  - conda-forge
+dependencies:
+  - conda-forge::python=3.11
+  - conda-forge::jinja2
+  - conda-forge::pyyaml
