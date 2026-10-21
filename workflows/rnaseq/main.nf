@@ -891,8 +891,8 @@ workflow RNASEQ {
             ch_collated_versions,
             ch_deseq2_qc_files.collect(),
             meth_files,
-            params.deg_table ? file(params.deg_table, checkIfExists: true) : null,
-            params.report_logo ? file(params.report_logo, checkIfExists: true) : null,
+            params.deg_table ? file(params.deg_table, checkIfExists: true) : [],
+            params.report_logo ? file(params.report_logo, checkIfExists: true) : [],
             file(params.outdir),
             rz_meta
         )

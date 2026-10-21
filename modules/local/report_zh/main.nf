@@ -8,10 +8,10 @@ process REPORT_ZH {
     input:
     path samplesheet
     path versions_yml
-    path deseq2_files, optional: true
-    path meth_files, optional: true
-    path deg_table, optional: true
-    path logo, optional: true
+    path deseq2_files
+    path meth_files
+    path deg_table
+    path logo
     val outdir
     val meta
 
