@@ -810,12 +810,19 @@ workflow RNASEQ {
     //
     ch_deseq2_qc_files = channel.empty()
     if (!params.skip_qc && !params.skip_deseq2_qc && !params.skip_quantification_merge) {
-        ch_deseq2_qc_files = ch_deseq2_qc_files.mix(DESEQ2_QC_BAM_SALMON.out.pca_multiqc)
-        ch_deseq2_qc_files = ch_deseq2_qc_files.mix(DESEQ2_QC_BAM_SALMON.out.dists_multiqc)
-        ch_deseq2_qc_files = ch_deseq2_qc_files.mix(DESEQ2_QC_RSEM.out.pca_multiqc)
-        ch_deseq2_qc_files = ch_deseq2_qc_files.mix(DESEQ2_QC_RSEM.out.dists_multiqc)
-        ch_deseq2_qc_files = ch_deseq2_qc_files.mix(DESEQ2_QC_PSEUDO.out.pca_multiqc)
-        ch_deseq2_qc_files = ch_deseq2_qc_files.mix(DESEQ2_QC_PSEUDO.out.dists_multiqc)
+        // Mirror the quantification branches above: only access .out of the
+        // DESEQ2_QC process actually invoked for the chosen aligner (DSL2
+        // forbids touching output of a process that is never called).
+        if (params.aligner == 'star_rsem') {
+            ch_deseq2_qc_files = ch_deseq2_qc_files.mix(DESEQ2_QC_RSEM.out.pca_multiqc)
+            ch_deseq2_qc_files = ch_deseq2_qc_files.mix(DESEQ2_QC_RSEM.out.dists_multiqc)
+        } else if (params.aligner in ['star_salmon', 'bowtie2_salmon']) {
+            ch_deseq2_qc_files = ch_deseq2_qc_files.mix(DESEQ2_QC_BAM_SALMON.out.pca_multiqc)
+            ch_deseq2_qc_files = ch_deseq2_qc_files.mix(DESEQ2_QC_BAM_SALMON.out.dists_multiqc)
+        } else if (!params.skip_pseudo_alignment && params.pseudo_aligner) {
+            ch_deseq2_qc_files = ch_deseq2_qc_files.mix(DESEQ2_QC_PSEUDO.out.pca_multiqc)
+            ch_deseq2_qc_files = ch_deseq2_qc_files.mix(DESEQ2_QC_PSEUDO.out.dists_multiqc)
+        }
     }
 
     //
